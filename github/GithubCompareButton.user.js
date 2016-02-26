@@ -5,7 +5,7 @@
 // @author      Christian Gripp
 // @copyright   2016+, core23 (http://core23.de)
 // @include     https://github.com/*
-// @version     1.0.0
+// @version     1.0.1
 // @grant       none
 // @run-at      document-end
 // ==/UserScript==
@@ -24,7 +24,7 @@
             return;
         }
         var url = $('h1.entry-title strong a').attr('href');
-        var tags = $('.select-menu-tab-bucket .select-menu-item span');
+        var tags = $('.select-menu-tab-bucket .select-menu-item .select-menu-item-text');
         var button = $('<button>').addClass('btn btn-sm btn-with-count select-menu-button js-menu-target').text('Compare');
         var submenu = $(['<div class="select-menu-modal-holder js-menu-content js-navigation-container">',
             '<div class="select-menu-modal-holder">',
@@ -38,7 +38,7 @@
             '</div>'].join(''));
         tags.each(function () {
             var tag = $(this).text().trim();
-            if (tag == branch) {
+            if (tag == branch || tag.match(/Create branch:/)) {
                 return;
             }
             var link = $(['<a class="select-menu-item js-navigation-item js-navigation-open" href="' + url + '/compare/' + branch + '...' + tag + '">',
@@ -53,10 +53,9 @@
         li.append(div).prependTo(actions);
     }
 
-    // Page load;
-
     console.log('GithubCompareButton', 'page load');
     createCompareMenu();
+
     // On pjax;
     unsafeWindow.$(document).on('pjax:end', function () {
         console.log('GithubCompareButton', 'pjax');
